@@ -15,4 +15,26 @@ export default defineConfig({
     // nitro/vite builds from this
     server: { entry: "server" },
   },
+  vite: {
+    environments: {
+      client: {
+        build: {
+          rolldownOptions: {
+            output: {
+              // Split large vendor libraries out of the entry chunk for better caching
+              codeSplitting: {
+                includeDependenciesRecursively: false,
+                groups: [
+                  { name: "vendor-react", test: /node_modules[\\/](react|react-dom|scheduler)[\\/]/, priority: 30 },
+                  { name: "vendor-router", test: /node_modules[\\/]@tanstack[\\/]/, priority: 20 },
+                  { name: "vendor-motion", test: /node_modules[\\/](framer-motion|motion-dom|motion-utils)[\\/]/, priority: 20 },
+                  { name: "vendor-ui", test: /node_modules[\\/](@radix-ui|cmdk|sonner|lucide-react|fuse\.js|zod|react-hook-form|@hookform)[\\/]/, priority: 10 },
+                ],
+              },
+            },
+          },
+        },
+      },
+    },
+  },
 });
